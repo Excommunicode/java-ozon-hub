@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  java-ozon:
+    build: .
+    image: ozon-hub
+    container_name: ozon
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ozon-hub
+      - SPRING_DATASOURCE_USER=Faruh
+      - SPRING_DATASOURCE_PASSWORD=iamroot
+
+  db:
+    image: postgres:16-alpine
+    container_name: db
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=ozon-hub
+      - POSTGRES_USER=Faruh
+      - POSTGRES_PASSWORD=iamroot
