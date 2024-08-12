@@ -1,4 +1,4 @@
-package kz.ozon.javaozonhub.config;
+package kz.ozon.javaozonhub.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -21,9 +21,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import static kz.ozon.javaozonhub.constant.Constant.ACCESS_TOKEN_EXPIRATION_MINUTES;
+import static kz.ozon.javaozonhub.constant.Constant.REFRESH_TOKEN_EXPIRATION_DAYS;
+
 @Slf4j
 @Component
 public class JwtProvider {
+
 
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
@@ -37,22 +41,26 @@ public class JwtProvider {
     }
 
     public String generateAccessToken(@NonNull User user) {
-        final LocalDateTime now = LocalDateTime.now();
-        final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
-        final Date accessExpiration = Date.from(accessExpirationInstant);
+        LocalDateTime now = LocalDateTime.now();
+
+        Instant accessExpirationInstant = now.plusMinutes(ACCESS_TOKEN_EXPIRATION_MINUTES)
+                .atZone(ZoneId.systemDefault()).toInstant();
+
+        Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
                 .setSubject(user.getLogin())
                 .setExpiration(accessExpiration)
                 .signWith(jwtAccessSecret)
                 .claim("roles", user.getRoles())
-                .claim("firstName", user.getFirstName())
                 .compact();
     }
 
     public String generateRefreshToken(@NonNull User user) {
-        final LocalDateTime now = LocalDateTime.now();
-        final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
-        final Date refreshExpiration = Date.from(refreshExpirationInstant);
+        LocalDateTime now = LocalDateTime.now();
+        Instant refreshExpirationInstant = now.plusDays(REFRESH_TOKEN_EXPIRATION_DAYS)
+                .atZone(ZoneId.systemDefault()).toInstant();
+
+        Date refreshExpiration = Date.from(refreshExpirationInstant);
         return Jwts.builder()
                 .setSubject(user.getLogin())
                 .setExpiration(refreshExpiration)

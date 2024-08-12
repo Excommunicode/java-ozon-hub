@@ -1,4 +1,4 @@
-package kz.ozon.javaozonhub.config;
+package kz.ozon.javaozonhub.jwt;
 
 import io.jsonwebtoken.Claims;
 import kz.ozon.javaozonhub.model.Role;
@@ -12,19 +12,17 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public final class JwtUtils {
+public class JwtUtils {
     private final RoleRepository roleRepository;
 
     public JwtAuthentication generate(Claims claims) {
         JwtAuthentication jwtInfoToken = new JwtAuthentication();
-        jwtInfoToken.setRoles(getRoles(claims));
-        jwtInfoToken.setFirstName(claims.get("firstName", String.class));
+        jwtInfoToken.setRoles(getRoles());
         jwtInfoToken.setUsername(claims.getSubject());
         return jwtInfoToken;
     }
 
-    private Set<Role> getRoles(Claims claims) {
-        List<String> roles = claims.get("roles", List.class);
+    private Set<Role> getRoles() {
         List<Role> all = roleRepository.findAll();
         return new HashSet<>(all);
     }

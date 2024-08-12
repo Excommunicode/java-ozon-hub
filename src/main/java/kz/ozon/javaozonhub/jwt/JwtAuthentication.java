@@ -1,4 +1,4 @@
-package kz.ozon.javaozonhub.config;
+package kz.ozon.javaozonhub.jwt;
 
 import kz.ozon.javaozonhub.model.Role;
 import lombok.Getter;

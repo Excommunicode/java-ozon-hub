@@ -11,8 +11,8 @@ import java.util.List;
 import static kz.ozon.javaozonhub.constant.Constant.DATA_TIME_FORMATTER;
 
 @Getter
-@ToString
 @Builder
+@ToString
 public class ApiError {
     private List<String> errors;
     private String message;

@@ -1,5 +1,6 @@
 package kz.ozon.javaozonhub.exception;
 
+import jakarta.security.auth.message.AuthException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +92,20 @@ public class HandlerException {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ApiError> onAuthException(final AuthException exception) {
+        log.warn("Exception: {}, AuthException error: \n{}", exception.getClass().getName(),
+                getExceptionMessage(exception));
+
+        ApiError errorResponse = ApiError.builder()
+                .errors(List.of(exception.getMessage()))
+                .status(HttpStatus.UNAUTHORIZED.name())
+                .reason("Authentication failed.")
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
 
     private String getExceptionMessage(Throwable exception) {
 
